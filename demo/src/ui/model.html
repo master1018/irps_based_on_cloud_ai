@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>model</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <!--    <link rel="stylesheet" href="css/common.css">-->
+    <!--    <link rel="stylesheet" href="css/data_text.css">-->
+    <!--    <link rel="stylesheet" href="css/foundation-datepicker.css">-->
+    <link rel="stylesheet" href="css/model_1.css">
+    <!--    <script src="js/model_1.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <![endif]-->
+
+
+</head>
+<style>
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-show {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        max-width: 400px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(-100%);
+        transition: transform 0.4s;
+        align-items: center;
+    }
+
+    .modal-content-show {
+        transform: translateY(0);
+    }
+
+    .modal-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+
+    .confirm-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 16px;
+        font-weight: bold;
+    }
+
+    .confirm-button:hover {
+        background-color: #0056b3;
+    }
+
+    .modal-text {
+        font-size: 18px;
+        margin-bottom: 16px;
+        line-height: 1.5;
+        font-family: Arial, sans-serif;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+    }
+</style>
+<video autoplay muted loop id="video-background">
+    <source src="img/bg.mp4" type="video/mp4">
+</video>
+<header>
+    <div class="logo">
+        <img src="img/logo.png" alt="Logo" class="animated-text">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">主页</a></li>
+            <li><a href="#">登录</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="page-title">
+    <h1>model</h1>
+</div>
+<hr class="tech-divider animated-text">
+<body>
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <i id="modal-icon" class="material-icons">
+        </i>
+
+        <p id="modal-text"></p>
+        <button id="confirm-button" class="confirm-button">确认</button>
+    </div>
+</div>
+
+<div class="left_1">
+    <p class="function-description animated-text">
+    <ul class="algorithm-list animated-text">
+        <li>上传简历（支持.png等文件）</li>
+    </ul>
+    </p>
+
+    <div class="file-upload-container animated-text">
+        <input type="file" id="file-upload" accept=".png" style="display: none;">
+        <div class="success-notification " id="success-notification" style="display: none;">
+            上传成功！
+        </div>
+        <label for="file-upload" class="file-upload-button">选择 png 文件</label>
+    </div>
+    <hr class="tech-divider animated-text">
+    <p class="function-description animated-text">
+</div>
+
+
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var videoElement = document.getElementById("video-background");
+        videoElement.playbackRate = 0.5;
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileUpload = document.getElementById("file-upload");
+        const runModelButton = document.getElementById("run-model");
+        const successNotification = document.getElementById("success-notification");
+
+        // Get the modal and its elements
+        const modal = document.getElementById("modal");
+        const modalContent = document.querySelector(".modal-content"); // Add this line
+        const modalIcon = document.getElementById("modal-icon");
+        const modalText = document.getElementById("modal-text");
+        const confirmButton = document.getElementById("confirm-button");
+
+        let fileUploaded = false;
+
+        // Function to show the modal with a specific message and icon
+        function showModal(message, iconName) {
+            modalText.innerText = message;
+            modalIcon.innerText = iconName;
+            modal.style.display = "block";
+            setTimeout(() => {
+                modal.classList.add("modal-show");
+                modalContent.classList.add("modal-content-show");
+            }, 50);
+        }
+
+        // Function to close the modal
+        function closeModalHandler() {
+            modal.classList.remove("modal-show");
+            modalContent.classList.remove("modal-content-show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 400);
+        }
+
+        fileUpload.addEventListener("change", function () {
+            if (fileUpload.files.length > 0) {
+                const file = fileUpload.files[0];
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+
+                if (["png"].includes(fileExtension)) {
+                    successNotification.style.display = "block";
+                    fileUploaded = true;
+                } else {
+                    successNotification.style.display = "none";
+                    fileUploaded = false;
+
+                }
+            } else {
+                successNotification.style.display = "none";
+                fileUploaded = false;
+            }
+        });
+
+        runModelButton.addEventListener("click", function () {
+            if (fileUploaded) {
+                window.location.href = "#";
+            } else {
+                showModal("请至少上传一个 png 数据文件", "cancel");
+            }
+        });
+
+        // Close the modal when the user clicks the confirm button or outside the modal
+        confirmButton.addEventListener("click", closeModalHandler);
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModalHandler();
+            }
+        });
+    });
+
+
+</script>
+</html>
